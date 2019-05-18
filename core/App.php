@@ -10,8 +10,10 @@ class App
 {
     public static function run ()
     {
-       // 测试自动加载类
-        new \core\lib\Route();
+        // 测试自动加载类
+        $route = new \core\lib\Route();
+        var_dump($route);
+        var_dump($_GET);
     }
 
     /**
