@@ -10,7 +10,22 @@ class App
 {
     public static function run ()
     {
-        p();
-        echo date('Y-m-d H:i:s');
+       // 测试自动加载类
+        new \core\lib\Route();
+    }
+
+    /**
+     * 自动加载类
+     * @param $path string  如：new \core\lib\Route()
+     */
+    public static function load ($path)
+    {
+        $tmpArr = explode('\\', $path);
+        $class = ucfirst(array_pop($tmpArr));
+        $file = ROOT . '/' . implode('/', $tmpArr) . '/' . $class . '.php';
+
+        if (is_file($file)) {
+            include_once $file;
+        }
     }
 }

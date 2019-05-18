@@ -1,8 +1,8 @@
 <?php
-
 /**
  * 入口文件
  */
+
 // 开启session
 session_start();
 
@@ -25,8 +25,9 @@ include CORE . '/common/func.php';
 include CORE . '/App.php';
 
 // 注册自动加载
+spl_autoload_register('\core\App::load');
 
-// 默认时区
+// 默认时区 TODO 应从配置文件中取
 date_default_timezone_set('PRC');
 
 // 运行框架
