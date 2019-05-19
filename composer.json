@@ -1,0 +1,19 @@
+{
+    "name": "mmmphp/mmmphp",
+    "description": "A tiny php framework",
+    "type": "project",
+    "keywords": [
+        "framework"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "gwx",
+            "email": "704835519@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "filp/whoops": "*"
+    }
+}

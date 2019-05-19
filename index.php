@@ -12,7 +12,12 @@ define('CORE', ROOT . '/core');
 define('DEBUG', true);
 
 // 调试模式是否开启
+require 'vendor/autoload.php';
+
 if (DEBUG) {
+    $whoops = new \Whoops\Run;
+    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
+    $whoops->register();
     ini_set('display_errors', 'On');
 } else {
     ini_set('display_errors', 'Off');
