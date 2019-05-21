@@ -8,13 +8,15 @@ namespace mmmphp\lib;
 
 class Route
 {
-    // TODO 应该从配置文件取
-    public $module = 'app';
-    public $controller = 'index';
-    public $action = 'index';
+    public $module = '';
+    public $controller = '';
+    public $action = '';
 
     public function __construct()
     {
+        $this->module = Conf::get('default_module');
+        $this->controller = Conf::get('default_controller');
+        $this->action = Conf::get('default_action');
         $path = $_SERVER['REQUEST_URI'];
 
         // 获取module、controller及action参数

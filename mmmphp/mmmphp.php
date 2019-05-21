@@ -28,8 +28,8 @@ include MMMPHP_LIB_PATH . '/App.php';
 // 注册自动加载
 spl_autoload_register('\mmmphp\lib\App::load');
 
-// 默认时区 TODO 应从配置文件中取
-date_default_timezone_set('PRC');
+// 默认时区
+date_default_timezone_set(\mmmphp\lib\Conf::get('TIMEZONE'));
 
 // 运行框架
 \mmmphp\lib\App::run();

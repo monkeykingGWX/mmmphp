@@ -8,7 +8,7 @@ class Index extends App
 {
     public function index ()
     {
-        $this->assign('name', 'gwx');
+        echo 'hello world';
         $this->display();
     }
 }
