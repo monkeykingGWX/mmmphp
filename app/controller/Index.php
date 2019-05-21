@@ -2,10 +2,13 @@
 
 namespace app\controller;
 
-class Index
+use mmmphp\App;
+
+class Index extends App
 {
     public function index ()
     {
-        echo 'hello';
+        $this->assign('name', 'gwx');
+        $this->display();
     }
 }

@@ -8,12 +8,13 @@ session_start();
 
 // 定义常量
 define('ROOT', __DIR__);
-define('CORE', ROOT . '/core');
+define('MMMPHP', ROOT . '/mmmphp');
 define('DEBUG', true);
 
-// 调试模式是否开启
+
 require 'vendor/autoload.php';
 
+// 调试模式是否开启
 if (DEBUG) {
     $whoops = new \Whoops\Run;
     $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
@@ -24,16 +25,16 @@ if (DEBUG) {
 }
 
 // 引入函数库文件
-include CORE . '/common/func.php';
+include MMMPHP . '/common/func.php';
 
 // 引入核心类文件
-include CORE . '/App.php';
+include MMMPHP . '/App.php';
 
 // 注册自动加载
-spl_autoload_register('\core\App::load');
+spl_autoload_register('\mmmphp\App::load');
 
 // 默认时区 TODO 应从配置文件中取
 date_default_timezone_set('PRC');
 
 // 运行框架
-\core\App::run();
+\mmmphp\App::run();

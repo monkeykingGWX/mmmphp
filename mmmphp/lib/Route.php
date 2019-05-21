@@ -4,7 +4,7 @@
  * 路由类
  */
 
-namespace core\lib;
+namespace mmmphp\lib;
 
 class Route
 {
