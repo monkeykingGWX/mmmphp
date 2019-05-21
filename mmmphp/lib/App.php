@@ -4,7 +4,7 @@
  * 核心类
  */
 
-namespace mmmphp;
+namespace mmmphp\lib;
 
 class App
 {
@@ -29,10 +29,10 @@ class App
         self::$action = strtolower($route->action);
 
         // TODO controller文件夹名应从配置文件取
-        $file = ROOT . '/' .  self::$module . '/controller/' . self::$controller . '.php';
+        $file = APP_PATH . '/' .  self::$module . '/controller/' . self::$controller . '.php';
 
         if (is_file($file)) {
-            $ctrl = '\\' .  self::$module . '\controller\\' . self::$controller;
+            $ctrl = '\\' .APP_NAME  . '\\' .  self::$module . '\controller\\' . self::$controller;
             $obj = new $ctrl;
 
             if (!method_exists($obj, self::$action)) {
@@ -60,7 +60,7 @@ class App
     {
         $tmpArr = explode('\\', $path);
         $class = ucfirst(array_pop($tmpArr));
-        $file = ROOT . '/' . implode('/', $tmpArr) . '/' . $class . '.php';
+        $file = MMMPHP_PATH . '/../' . implode('/', $tmpArr) . '/' . $class . '.php';
 
         if (is_file($file)) {
             include_once $file;
@@ -80,7 +80,7 @@ class App
     public function display (string $file = '')
     {
         // TODO 模板文件名及文件后缀名夹应从配置中拿,
-        $path = ROOT . '/'. self::$module . '/view/' . strtolower(self::$controller) . '/';
+        $path = APP_PATH . '/'. self::$module . '/view/' . strtolower(self::$controller) . '/';
 
         if (empty($file)) {
             $filepath = $path . self::$action . '.php';

@@ -1,8 +1,8 @@
 <?php
 
-namespace app\controller;
+namespace app\home\controller;
 
-use mmmphp\App;
+use mmmphp\lib\App;
 
 class Index extends App
 {
