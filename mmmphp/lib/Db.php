@@ -1,5 +1,8 @@
 <?php
-// TODO 记录日志
+/**
+ * 数据库类
+ */
+
 namespace mmmphp\lib;
 
 class Db
@@ -32,6 +35,7 @@ class Db
 
     /**
      * 数据库初始化
+     * @param array $config 配置项
      */
     private function __construct(array $config = [])
     {
@@ -69,6 +73,10 @@ class Db
      */
     public function execute ($sql)
     {
+        if (APP_DEBUG) {
+            Log::record($sql, Log::SQL);
+        }
+
         $flag = mysqli_query($this->mysqli, $sql);
 
         if ($flag === false) {
@@ -93,6 +101,10 @@ class Db
      */
     public function query ($sql, $resultType = MYSQLI_ASSOC)
     {
+        if (APP_DEBUG) {
+            Log::record($sql, Log::SQL);
+        }
+
         $result = mysqli_query($this->mysqli, $sql);
 
         if ($result === false) {
@@ -153,6 +165,11 @@ class Db
         mysqli_autocommit($this->mysqli, true);
     }
 
+    /**
+     * 数据过滤，防sql注入
+     * @param $str
+     * @return array|mixed|string
+     */
     public function filter ($str)
     {
         if (is_array($str)) {
@@ -168,14 +185,13 @@ class Db
         return $str;
     }
 
+    /**
+     * 获取数据库错误信息
+     * @return string
+     */
     public function getError ()
     {
         return mysqli_error($this->mysqli) . mysqli_errno($this->mysqli);
-    }
-
-    public function __destruct()
-    {
-        mysqli_close($this->mysqli);
     }
 
     /**
@@ -259,7 +275,7 @@ class Db
      */
     public function adds (array $datas, string $table)
     {
-        $data = $this->filter($table);
+        $table = $this->filter($table);
         $datas = $this->filter($datas);
         $intField = $intVal = '';
 
@@ -348,5 +364,10 @@ class Db
         }
 
         $this->callMethod['field'] = '*';
+    }
+
+    public function __destruct()
+    {
+        mysqli_close($this->mysqli);
     }
 }
