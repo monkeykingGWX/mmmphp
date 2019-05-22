@@ -12,10 +12,10 @@ class Upload
      * @var array 可设置项
      */
     private $configs = [
-        'allowType' => [],     // 允许上传的文件后缀
-        'maxSize' => 0,        // 限制文件大小
-        'uploadPath' => './upload',    // 文件上传根目录
-        'subPath' => ''        // 子目录
+        'allow_type' => [],     // 允许上传的文件后缀
+        'max_size' => 0,        // 限制文件大小
+        'upload_path' => './upload',    // 文件上传根目录
+        'sub_path' => ''        // 子目录
     ];
 
     /**
@@ -54,13 +54,13 @@ class Upload
      */
     public function __construct ($configs = [])
     {
-        if (!array_key_exists('subPath', $configs)) {
-            $this->configs['subPath'] = date('Ymd', time());
+        if (!array_key_exists('sub_path', $configs)) {
+            $this->configs['sub_path'] = date('Ymd', time());
         }
 
         foreach ($configs as $property => $val) {
             if (array_key_exists($property, $this->configs)) {
-                if ($property == 'uploadPath' || $property == 'subPath') {
+                if ($property == 'upload_path' || $property == 'sub_path') {
                     $val = rtrim($val, '/\\');
                 }
                 $this->configs[$property] = $val;
@@ -200,7 +200,7 @@ class Upload
      */
     private function checkSize ($fileSize)
     {
-        if ($fileSize > $this->configs['maxSize']) {
+        if ($fileSize > $this->configs['max_size']) {
             $this->errCode = 2;
             return false;
         } else {
@@ -215,7 +215,7 @@ class Upload
      */
     private function checkType ($allowType)
     {
-        if (!in_array($allowType, $this->configs['allowType'])) {
+        if (!in_array($allowType, $this->configs['allow_type'])) {
             $this->errCode = 5;
             return false;
         } else {
@@ -231,12 +231,12 @@ class Upload
     private function uploadOne ($tmpFile, $oldName)
     {
         // 创建跟目录及子目录
-        if (!is_dir($this->configs['uploadPath']) && !mkdir($this->configs['uploadPath'], 0755)) {
+        if (!is_dir($this->configs['upload_path']) && !mkdir($this->configs['upload_path'], 0755)) {
             $this->errCode = 6;
             return false;
         }
 
-        $subDir = $this->configs['uploadPath'] . '/' . $this->configs['subPath'];
+        $subDir = $this->configs['upload_path'] . '/' . $this->configs['sub_path'];
 
         if (!is_dir($subDir) && !mkdir($subDir, 0755)) {
             $this->errCode = 7;
@@ -251,7 +251,7 @@ class Upload
 
         // 移动文件
         $newFileName = date('YmdHis') . mt_rand(100000,999999) . strrchr($oldName, '.');
-        $newFilePath = $this->configs['uploadPath'] . '/' . $this->configs['subPath'] . '/' . $newFileName;
+        $newFilePath = $this->configs['upload_path'] . '/' . $this->configs['sub_path'] . '/' . $newFileName;
 
         if (!move_uploaded_file($tmpFile, $newFilePath)) {
             $this->errCode = 9;

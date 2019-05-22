@@ -26,5 +26,10 @@ return array(
     // 日志配置项
     'LOG_FILESIZE' => 2097152,    // 大小限制
     'LOG_TYPE' => 'file',    // 日志驱动方式
-    'LOG_TIME_FORMAT' => 'c'    // 时间format
+    'LOG_TIME_FORMAT' => 'c',    // 时间format
+
+    // 上传配置项
+    'UPLOAD_ALLOW_TYPE' => ['gif', 'jpg', 'png', 'jpeg'],    // 允许文件上传后缀类型
+    'UPLOAD_MAX_SIZE' => 10485760,    // 文件最大上传大小 10M
+    'UPLOAD_ROOT_PATH' => './upload',    // 文件上传根目录
 );
