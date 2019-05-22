@@ -3,7 +3,6 @@
 namespace app\home\controller;
 
 use mmmphp\lib\Controller;
-use app\home\model\Tdb;
 
 class Index extends Controller
 {
