@@ -14,10 +14,10 @@ class App
      */
     public static function run ()
     {
-        $route = new \mmmphp\lib\Route();
-        $module = strtolower($route->module);
+        $route      = new \mmmphp\lib\Route();
+        $module     = strtolower($route->module);
         $controller = ucfirst($route->controller);
-        $action = strtolower($route->action);
+        $action     = strtolower($route->action);
 
         $file = APP_PATH . '/' .  $module . '/'. Conf::get('CONTROLLER_NAME') .'/' . $controller . '.php';
 
@@ -47,8 +47,8 @@ class App
     public static function load ($path)
     {
         $tmpArr = explode('\\', $path);
-        $class = ucfirst(array_pop($tmpArr));
-        $file = MMMPHP_PATH . '/../' . implode('/', $tmpArr) . '/' . $class . '.php';
+        $class  = ucfirst(array_pop($tmpArr));
+        $file   = MMMPHP_PATH . '/../' . implode('/', $tmpArr) . '/' . $class . '.php';
 
         if (is_file($file)) {
             include_once $file;

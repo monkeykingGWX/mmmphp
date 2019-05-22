@@ -34,7 +34,7 @@ class Conf
             }
         }
 
-        $path = MMMPHP_PATH . '/conf/' . $file . '.php';    // 框架配置目录
+        $path    = MMMPHP_PATH . '/conf/' . $file . '.php';    // 框架配置目录
         $appPath = APP_CONF . '/' . $file . '.php';    // 自定义配置目录
 
         if (is_file($path) || is_file($appPath)) {

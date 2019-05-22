@@ -8,7 +8,12 @@ class Index extends Controller
 {
     public function index ()
     {
-        $this->assign('name', 'gwx');
-        $this->display();
+        if (isPost()) {
+            $upload = new \mmmphp\lib\Upload();
+            $upload->uploadSomeFile();
+        } else {
+            $this->assign('name', 'gwx');
+            $this->display();
+        }
     }
 }

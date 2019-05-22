@@ -16,8 +16,8 @@ class Error
     {
         $error = [
             'message' => $err->getMessage(),
-            'line' => $err->getLine(),
-            'file' => $err->getFile()
+            'line'    => $err->getLine(),
+            'file'    => $err->getFile()
         ];
 
         // 记录错误日志
@@ -34,8 +34,8 @@ class Error
     {
         $error = [
             'message' => $errStr,
-            'file' => $errFile,
-            'line' => $errLine
+            'file'    => $errFile,
+            'line'    => $errLine
         ];
 
         // 记录错误日志

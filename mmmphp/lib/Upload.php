@@ -3,8 +3,8 @@
  * 文件上传类
  * Class Upload
  */
-namespace mmmphp\lib;
 
+namespace mmmphp\lib;
 
 class Upload
 {
@@ -12,10 +12,11 @@ class Upload
      * @var array 可设置项
      */
     private $configs = [
-        'allow_type' => [],     // 允许上传的文件后缀
-        'max_size' => 0,        // 限制文件大小
-        'upload_path' => './upload',    // 文件上传根目录
-        'sub_path' => ''        // 子目录
+        'allow_type'    => [],     // 允许上传的文件后缀
+        'max_size'      => 0,        // 限制文件大小
+        'upload_path'   => './upload',    // 文件上传根目录
+        'sub_path'      => '',        // 子目录
+        'default_field' => '',    // 默认文件上传域名称
     ];
 
     /**
@@ -52,8 +53,16 @@ class Upload
      * Upload constructor.
      * @param array $configs 初始化设置
      */
-    public function __construct ($configs = [])
+    public function __construct($configs = [])
     {
+        $defaultConf = [
+            'allow_type'    => Conf::get('UPLOAD_ALLOW_TYPE'),
+            'max_size'      => Conf::get('UPLOAD_MAX_SIZE'),
+            'upload_path'   => Conf::get('UPLOAD_ROOT_PATH'),
+            'default_field' => Conf::get('UPLOAD_DEFAULT_FIELD'),
+        ];
+        $configs = array_merge($defaultConf, $configs);
+
         if (!array_key_exists('sub_path', $configs)) {
             $this->configs['sub_path'] = date('Ymd', time());
         }
@@ -72,7 +81,7 @@ class Upload
      * 获取错误信息
      * @return mixed
      */
-    public function getErrMsg ()
+    public function getErrMsg()
     {
         return $this->errs[$this->errCode];
     }
@@ -81,7 +90,7 @@ class Upload
      * 获取上传文件路径
      * @return string
      */
-    public function getFilePath ()
+    public function getFilePath()
     {
         return $this->newFilePath;
     }
@@ -91,14 +100,16 @@ class Upload
      * @param string $fieldName $_FILES[$file]的中$file值
      * @return bool;
      */
-    public function upload ($fieldName = 'file')
+    public function upload($fieldName = '')
     {
+        $fieldName = $fieldName ? : $this->configs['default_field'];
         if (empty($_FILES[$fieldName])) {
             $this->errCode = 1;
             return false;
         }
 
-        $fileType = strstr( $_FILES[$fieldName]['type'], '/');
+        // 获取文件名后缀
+        $fileType        = strstr($_FILES[$fieldName]['type'], '/');
         $this->fileType = trim($fileType, '/');
 
         // 文件上传错误校验
@@ -130,7 +141,9 @@ class Upload
      * @param string $fieldName
      * @return bool
      */
-    public function uploadSomeFile ($fieldName = '') {
+    public function uploadSomeFile($fieldName = '')
+    {
+        $fieldName = $fieldName ? : $this->configs['default_field'];
         if (empty($_FILES[$fieldName])) {
             $this->errCode = 1;
             return false;
@@ -148,7 +161,7 @@ class Upload
             }
 
             // 文件后缀校验
-            $fileType = strstr( $_FILES[$fieldName]['type'][$k], '/');
+            $fileType        = strstr($_FILES[$fieldName]['type'][$k], '/');
             $this->fileType = trim($fileType, '/');
 
             if (!$this->checkType($this->fileType)) {
@@ -171,7 +184,7 @@ class Upload
      * @param $error
      * @return bool
      */
-    private function checkErr ($error)
+    private function checkErr($error)
     {
         switch ($error) {
             case 1:
@@ -186,7 +199,7 @@ class Upload
                 break;
         }
 
-        if ( $error== 0) {
+        if ($error == 0) {
             return true;
         } else {
             return false;
@@ -198,7 +211,7 @@ class Upload
      * @param $fileSize
      * @return bool
      */
-    private function checkSize ($fileSize)
+    private function checkSize($fileSize)
     {
         if ($fileSize > $this->configs['max_size']) {
             $this->errCode = 2;
@@ -213,7 +226,7 @@ class Upload
      * @param $allowType
      * @return bool
      */
-    private function checkType ($allowType)
+    private function checkType($allowType)
     {
         if (!in_array($allowType, $this->configs['allow_type'])) {
             $this->errCode = 5;
@@ -228,17 +241,17 @@ class Upload
      * @param $tmpFile
      * @return bool
      */
-    private function uploadOne ($tmpFile, $oldName)
+    private function uploadOne($tmpFile, $oldName)
     {
         // 创建跟目录及子目录
-        if (!is_dir($this->configs['upload_path']) && !mkdir($this->configs['upload_path'], 0755)) {
+        if (!is_dir($this->configs['upload_path']) && !mkdir($this->configs['upload_path'], 0755, true)) {
             $this->errCode = 6;
             return false;
         }
 
         $subDir = $this->configs['upload_path'] . '/' . $this->configs['sub_path'];
 
-        if (!is_dir($subDir) && !mkdir($subDir, 0755)) {
+        if (!is_dir($subDir) && !mkdir($subDir, 0755, true)) {
             $this->errCode = 7;
             return false;
         }
@@ -250,7 +263,7 @@ class Upload
         }
 
         // 移动文件
-        $newFileName = date('YmdHis') . mt_rand(100000,999999) . strrchr($oldName, '.');
+        $newFileName = date('YmdHis') . mt_rand(100000, 999999) . strrchr($oldName, '.');
         $newFilePath = $this->configs['upload_path'] . '/' . $this->configs['sub_path'] . '/' . $newFileName;
 
         if (!move_uploaded_file($tmpFile, $newFilePath)) {

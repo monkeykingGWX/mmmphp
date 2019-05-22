@@ -8,6 +8,15 @@
     <title>Document</title>
 </head>
 <body>
-<?=$name?>
+<p>上传单个文件</p>
+<form action="" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <input type="submit" value="上传文件" />
+</form>
+<p>上传多个文件</p>
+<form action="" method="post" enctype="multipart/form-data">
+    <input type="file" name="file[]" multiple="multiple" accept="image/*" />
+    <input type="submit" value="上传文件" />
+</form>
 </body>
 </html>

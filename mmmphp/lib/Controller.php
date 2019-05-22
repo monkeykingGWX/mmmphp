@@ -18,15 +18,15 @@ class Controller
 
     public function __construct($module, $controller, $action)
     {
-        $this->module = $module;
+        $this->module     = $module;
         $this->controller = $controller;
-        $this->action = $action;
+        $this->action     = $action;
 
         // 初始化日志系统
         $logConf = [
             'log_time_format' => Conf::get('LOG_TIME_FORMAT'),
-            'log_filesize' => Conf::get('LOG_FILESIZE'),
-            'log_path' => APP_PATH . '/logs/'.$module
+            'log_filesize'    => Conf::get('LOG_FILESIZE'),
+            'log_path'        => APP_PATH . '/logs/'.$module
         ];
         Log::init($logConf, Conf::get('LOG_TYPE'));
     }

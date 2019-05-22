@@ -38,12 +38,12 @@ class Model
         } else {
             $connection = Conf::get('', 'database');
             $config = [
-                'host' => $connection['DB_HOST'],
-                'user' =>  $connection['DB_USER'],
-                'pass' =>  $connection['DB_PASS'],
-                'charset' =>  $connection['DB_CHARSET'],
-                'db' =>  $connection['DB_NAME'],
-                'port' =>  $connection['DB_PORT']
+                'host'    => $connection['DB_HOST'],
+                'user'    => $connection['DB_USER'],
+                'pass'    => $connection['DB_PASS'],
+                'charset' => $connection['DB_CHARSET'],
+                'db'      => $connection['DB_NAME'],
+                'port'    => $connection['DB_PORT']
             ];
             $this->db = Db::getInstance($config);
         }

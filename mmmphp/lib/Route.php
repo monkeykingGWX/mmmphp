@@ -14,10 +14,10 @@ class Route
 
     public function __construct()
     {
-        $this->module = Conf::get('default_module');
+        $this->module     = Conf::get('default_module');
         $this->controller = Conf::get('default_controller');
-        $this->action = Conf::get('default_action');
-        $path = $_SERVER['REQUEST_URI'];
+        $this->action     = Conf::get('default_action');
+        $path             = $_SERVER['REQUEST_URI'];
 
         // 获取module、controller及action参数
         if ($path != '/') {

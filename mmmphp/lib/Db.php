@@ -12,12 +12,12 @@ class Db
 
     // 配置项
     private $config =  [
-        'host' => 'localhost',
-        'user' => 'root',
-        'pass' => '',
+        'host'    => 'localhost',
+        'user'    => 'root',
+        'pass'    => '',
         'charset' => 'utf8',
-        'db' => 'test',
-        'port' => 3306
+        'db'      => 'test',
+        'port'    => 3306
     ];
 
     // mysqli实例
@@ -25,12 +25,12 @@ class Db
 
     // 可进行连贯操作的方法名
     private $callMethod = [
-        'field' => '*',
-        'where' => '',
-        'group' => '',
+        'field'  => '*',
+        'where'  => '',
+        'group'  => '',
         'having' => '',
-        'order' => '',
-        'limit' => ''
+        'order'  => '',
+        'limit'  => ''
     ];
 
     /**
@@ -262,8 +262,8 @@ class Db
         }
 
         $intField = substr($intField, 0, -1);
-        $intVal = substr($intVal, 0, -1);
-        $sql = "INSERT INTO {$table}($intField) VALUES($intVal)";
+        $intVal   = substr($intVal, 0, -1);
+        $sql      = "INSERT INTO {$table}($intField) VALUES($intVal)";
 
         return $this->execute($sql);
     }
@@ -293,8 +293,8 @@ class Db
         }
 
         $intField = substr($intField, 0, -1);
-        $intVal = substr($intVal, 0, -1);
-        $sql = "INSERT INTO {$table}($intField) VALUES{$intVal}";
+        $intVal   = substr($intVal, 0, -1);
+        $sql      = "INSERT INTO {$table}($intField) VALUES{$intVal}";
 
         return $this->execute($sql);
     }
@@ -306,7 +306,7 @@ class Db
      * @return bool|int
      */
     public function save (array $data, string $where, string $table) {
-        $data = $this->filter($data);
+        $data  = $this->filter($data);
         $table = $this->filter($table);
         $where = 'WHERE ' . $this->filter($where);
 
@@ -329,7 +329,7 @@ class Db
     {
         $table = $this->filter($table);
         $where = 'WHERE ' . $this->filter($where);
-        $sql = "DELETE FROM {$table} {$where}";
+        $sql   = "DELETE FROM {$table} {$where}";
 
         return $this->execute($sql);
     }

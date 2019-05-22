@@ -6,8 +6,8 @@ class File
 {
     private $config = [
         'log_time_format' => 'c',
-        'log_filesize' => 1048576,   // 1M大小
-        'log_path' => ''
+        'log_filesize'    => 1048576,   // 1M大小
+        'log_path'        => ''
     ];
 
     /**
@@ -25,12 +25,12 @@ class File
      * @param string 日志名
      * @return void
      */
-    public function write ($log, $destination = '')
+    public function write($log, $destination = '')
     {
         $now = date($this->config['log_time_format']);
 
         if (!$destination) {
-            $destination = rtrim($this->config['log_path'], '/\\') . '/'.date('Y-m-d') . '.log';
+            $destination = rtrim($this->config['log_path'], '/\\') . '/' . date('Y-m-d') . '.log';
         }
 
         // 创建日志目录
@@ -40,10 +40,10 @@ class File
 
         // 日志超过配置的大小，则重新生成日志
         if (is_file($destination) && filesize($destination) > $this->config['log_filesize']) {
-            rename($destination, dirname($destination).'/'.time() . '-' . basename($destination));
+            rename($destination, dirname($destination) . '/' . time() . '-' . basename($destination));
         }
 
         // 记录日志
-        error_log("[{$now}] ".$_SERVER['REMOTE_ADDR'].' '.$_SERVER['REQUEST_URI'].PHP_EOL."{$log}".PHP_EOL, 3, $destination);
+        error_log("[{$now}] " . $_SERVER['REMOTE_ADDR'] . ' ' . $_SERVER['REQUEST_URI'] . PHP_EOL . "{$log}" . PHP_EOL, 3, $destination);
     }
 }
