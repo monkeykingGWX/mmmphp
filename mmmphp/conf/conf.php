@@ -15,11 +15,16 @@ return array(
     'DEFAULT_ACTION' => 'index',
 
     // 默认文件夹名
-    'CONTROLLER_NAME' => 'controller',
-    'VIEW_NAME' => 'view',
-    'MODEL_NAME' => 'model',
+    'CONTROLLER_NAME' => 'controller',    // 控制器文件夹名
+    'VIEW_NAME' => 'view',    // 视图文件夹名
+    'MODEL_NAME' => 'model',    // 模型文件夹名
 
     'VIEW_EXT' => '.php',    // 模板文件后缀名
 
     'ERR_FILE' => MMMPHP_PATH . '/tpl/error.tpl',    // 错误页
+
+    // 日志配置项
+    'LOG_FILESIZE' => 2097152,    // 大小限制
+    'LOG_TYPE' => 'file',    // 日志驱动方式
+    'LOG_TIME_FORMAT' => 'c'    // 时间format
 );

@@ -20,7 +20,10 @@ class Error
             'file' => $err->getFile()
         ];
 
-        // TODO 记录错误日志
+        // 记录错误日志
+        $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})";
+        Log::write($log);
+
         self::dealError($error);
     }
 
@@ -35,7 +38,10 @@ class Error
             'line' => $errLine
         ];
 
-        // TODO 记录错误日志
+        // 记录错误日志
+        $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})";
+        Log::write($log);
+
         self::dealError($error);
     }
 
@@ -45,11 +51,14 @@ class Error
     public static function fatalError ()
     {
         $error = error_get_last();
+
         if ($error) {
-            // TODO 记录错误日志
+            // 记录错误日志
+            $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})";
+            Log::write($log);
+
             self::dealError($error);
         }
-
     }
 
     /**
