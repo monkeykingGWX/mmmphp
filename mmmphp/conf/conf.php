@@ -20,4 +20,6 @@ return array(
     'MODEL_NAME' => 'model',
 
     'VIEW_EXT' => '.php',    // 模板文件后缀名
+
+    'ERR_FILE' => MMMPHP_PATH . '/tpl/error.tpl',    // 错误页
 );

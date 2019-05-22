@@ -11,9 +11,6 @@ define('MMMPHP_LIB_PATH', MMMPHP_PATH . '/lib');
 
 // 调试模式是否开启
 if (APP_DEBUG) {
-    $whoops = new \Whoops\Run;
-    $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler);
-    $whoops->register();
     ini_set('display_errors', 'On');
 } else {
     ini_set('display_errors', 'Off');
@@ -27,6 +24,11 @@ include MMMPHP_LIB_PATH . '/App.php';
 
 // 注册自动加载
 spl_autoload_register('\mmmphp\lib\App::load');
+
+// 注册错误和异常处理
+register_shutdown_function('mmmphp\lib\Error::fatalError');
+set_error_handler('\mmmphp\lib\Error::errorHandler');
+set_exception_handler('\mmmphp\lib\Error::exception');
 
 // 默认时区
 date_default_timezone_set(\mmmphp\lib\Conf::get('TIMEZONE'));
