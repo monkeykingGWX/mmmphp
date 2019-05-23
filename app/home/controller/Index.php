@@ -3,6 +3,7 @@
 namespace app\home\controller;
 
 use mmmphp\lib\Controller;
+use mmmphp\lib\Page;
 use mmmphp\lib\Verify;
 use mmmphp\lib\Image;
 
@@ -69,5 +70,11 @@ class Index extends Controller
 
         /* 文字水印 */
         $image->text('MMMPHP ', MMMPHP_PATH . '/lib/verify/ttf/1.ttf',30)->output();
+    }
+
+    public function page ()
+    {
+        $page = new Page('10', '20');
+
     }
 }

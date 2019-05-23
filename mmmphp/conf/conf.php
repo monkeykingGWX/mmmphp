@@ -12,6 +12,11 @@ return array(
     'DEFAULT_CONTROLLER' => 'index',
     'DEFAULT_ACTION'     => 'index',
 
+    // 普通模式下模块控制器动作参数名
+    'NORMAL_MODULE_PARAM' => 'm',
+    'NORMAL_CONTROLLER_PARAM' => 'c',
+    'NORMAL_ACTION_PARAM' => 'a',
+
     // 默认文件夹名
     'CONTROLLER_NAME'    => 'controller',    // 控制器文件夹名
     'VIEW_NAME'          => 'view',    // 视图文件夹名

@@ -19,6 +19,14 @@ class App
         $controller = ucfirst($route->controller);
         $action     = strtolower($route->action);
 
+        // 初始化日志系统
+        $logConf = [
+            'log_time_format' => Conf::get('LOG_TIME_FORMAT'),
+            'log_filesize'    => Conf::get('LOG_FILESIZE'),
+            'log_path'        => APP_PATH . '/logs/'.$module
+        ];
+        Log::init($logConf, Conf::get('LOG_TYPE'));
+
         $file = APP_PATH . '/' .  $module . '/'. Conf::get('CONTROLLER_NAME') .'/' . $controller . '.php';
 
         if (is_file($file)) {

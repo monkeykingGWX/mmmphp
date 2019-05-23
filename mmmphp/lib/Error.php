@@ -22,7 +22,7 @@ class Error
 
         // 记录错误日志
         $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})";
-        Log::write($log);
+        Log::record($log);
 
         self::dealError($error);
     }
@@ -40,7 +40,7 @@ class Error
 
         // 记录错误日志
         $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})";
-        Log::write($log);
+        Log::record($log);
 
         self::dealError($error);
     }
@@ -55,10 +55,13 @@ class Error
         if ($error) {
             // 记录错误日志
             $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})";
-            Log::write($log);
+            Log::record($log);
 
             self::dealError($error);
         }
+
+        // 生成日志文件
+        Log::save();
     }
 
     /**
