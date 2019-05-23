@@ -17,9 +17,7 @@
         "ext-mysqli": "*",
         "ext-gd": "*",
         "ext-mbstring": "*",
-        "ext-iconv" : "*",
-        "filp/whoops": "*",
-        "phpunit/phpunit":"6.5.*"
+        "ext-iconv" : "*"
     },
     "repositories": {
         "packagist": {
