@@ -36,4 +36,9 @@ return array(
     'UPLOAD_MAX_SIZE'      => 10485760,    // 文件最大上传大小 10M
     'UPLOAD_ROOT_PATH'     => './upload',    // 文件上传根目录
     'UPLOAD_DEFAULT_FIELD' => 'file',    // 默认文件上传域名称
+
+    // 分页配置项
+    'PAGE_PARAM' => 'mmmphp_page',    // 分页参数名
+    'PAGE_LIST_ROW' => 25,    // 每页显示条数
+    'PAGE_LIST_NUM' => 9,    // 每页显示分页链接数
 );

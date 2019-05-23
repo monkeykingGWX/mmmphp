@@ -11,18 +11,14 @@ class Index extends Controller
 {
     public function index ()
     {
-        if (isPost()) {
-            $upload = new \mmmphp\lib\Upload();
-            $upload->uploadSomeFile();
-        } else {
-            $this->assign('name', 'gwx');
-            $this->display();
-        }
+        $page = new Page('1000', '20');
+        $this->assign('page', $page->show());
+        $this->display();
     }
 
     public function check ()
     {
-        $code = $_GET['code'];
+        $code   = $_GET['code'];
         $verify = new Verify();
         var_dump($verify->check($code));
     }
@@ -74,7 +70,8 @@ class Index extends Controller
 
     public function page ()
     {
-        $page = new Page('10', '20');
-
+        $page = new Page('1000', '20');
+        $this->assign('page', $page->show());
+        $this->display('index.php');
     }
 }

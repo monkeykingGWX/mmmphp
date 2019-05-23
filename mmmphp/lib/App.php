@@ -16,7 +16,7 @@ class App
     {
         $route      = new \mmmphp\lib\Route();
         $module     = strtolower($route->module);
-        $controller = ucfirst($route->controller);
+        $controller = ucfirst(strtolower($route->controller));
         $action     = strtolower($route->action);
 
         // 初始化日志系统
