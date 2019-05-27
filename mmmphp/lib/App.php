@@ -16,8 +16,8 @@ class App
     {
         $route      = new \mmmphp\lib\Route();
         $module     = strtolower($route->module);
-        $controller = ucfirst(strtolower($route->controller));
-        $action     = strtolower($route->action);
+        $controller = self::parseStr($route->controller);
+        $action     = $route->action;
 
         // 初始化日志系统
         $logConf = [
@@ -39,8 +39,7 @@ class App
                 });
             }
 
-            $act = strtolower($route->action);
-            $obj->$act();    // 执行控制器方法
+            $obj->$action();    // 执行控制器方法
         } else {
             throwErr ($module . '/' . $controller . '控制器不存在', function (){
                 http_response_code(404);
@@ -63,4 +62,19 @@ class App
         }
     }
 
+    /**
+     * 将user_del 转变为UserDel或userDel返回
+     * @param $str
+     * @return string
+     */
+    private static function parseStr ($str)
+    {
+        $tmpArr = explode('_', $str);
+        $arr    = array_map(function ($val)
+        {
+            return ucfirst($val);
+        }, $tmpArr);
+
+        return implode("", $arr);
+    }
 }
