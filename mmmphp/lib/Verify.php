@@ -117,7 +117,7 @@ class Verify
             'code' => $this->authCode(strtolower($this->code)),
             'time' => time()
         ];
-        $_SESSION[$this->authCode($this->seKey)] = $verify;
+        Session::set($this->authCode($this->seKey), $verify);
 
         // 图片输出
         header('Cache-Control: private, max-age=0, no-store, no-cache, must-revalidate');
@@ -136,12 +136,8 @@ class Verify
      */
     public function check($code)
     {
-        $key = $this->authCode($this->seKey);
-
-        if (!array_key_exists($key, $_SESSION)) {
-            return false;
-        }
-        $secode = $_SESSION[$key];
+        $key    = $this->authCode($this->seKey);
+        $secode = Session::get($key);
 
         if (empty($code) || empty($secode)) {
             return false;

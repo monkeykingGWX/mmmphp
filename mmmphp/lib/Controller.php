@@ -6,22 +6,12 @@ namespace mmmphp\lib;
 
 class Controller
 {
-    public $module = '';
-    public $controller = '';
-    public $action = '';
 
     /**
      * 存储模板变量
      * @var array
      */
     private $assign = [];
-
-    public function __construct($module, $controller, $action)
-    {
-        $this->module     = $module;
-        $this->controller = $controller;
-        $this->action     = $action;
-    }
 
     /**
      * 注入模板变量
@@ -35,10 +25,10 @@ class Controller
 
     public function display (string $file = '')
     {
-        $path = APP_PATH . '/'. $this->module . '/' . Conf::get('VIEW_NAME') . '/' . strtolower($this->controller) . '/';
+        $path = APP_PATH . '/'. __MODULE__ . '/' . Conf::get('VIEW_NAME') . '/' . strtolower(__CONTROLLER__) . '/';
 
         if (empty($file)) {
-            $filepath = $path . $this->action . Conf::get('VIEW_EXT');
+            $filepath = $path . __ACTION__ . Conf::get('VIEW_EXT');
         } else if ($file{0} == '/') { // 使用绝对路径
             $filepath = $file;
         } else {    // 使用相对路径

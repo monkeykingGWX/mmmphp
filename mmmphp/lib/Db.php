@@ -23,16 +23,6 @@ class Db
     // mysqli实例
     private $mysqli = null;
 
-    // 可进行连贯操作的方法名
-    private $callMethod = [
-        'field'  => '*',
-        'where'  => '',
-        'group'  => '',
-        'having' => '',
-        'order'  => '',
-        'limit'  => ''
-    ];
-
     /**
      * 数据库初始化
      * @param array $config 配置项
@@ -178,7 +168,6 @@ class Db
             }
         } else {
             $str = mysqli_real_escape_string($this->mysqli, $str);
-            $str = str_replace("_", "\_", $str );
             $str = str_replace("%", "\%", $str );
         }
 
@@ -195,57 +184,6 @@ class Db
     }
 
     /**
-     * 连贯操作
-     * @param $methodName
-     * @param $arguments
-     * @return $this
-     */
-    public function __call($methodName, $arguments)
-    {
-        $methodName = strtolower($methodName);
-
-        if (array_key_exists($methodName, $this->callMethod) && isset($arguments[0])) {
-            $this->callMethod[$methodName] = $this->filter($arguments[0]);
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param string $table
-     * @return array|bool|null
-     */
-    public function select (string $table)
-    {
-        $table = $this->filter($table);
-        $this->setParam();
-        $sql = "SELECT {$this->callMethod['field']} FROM {$table} 
-            {$this->callMethod['where']} 
-            {$this->callMethod['group']}
-            {$this->callMethod['having']} 
-            {$this->callMethod['order']} 
-            {$this->callMethod['limit']}";
-        $this->initParam();
-
-        return $this->query($sql);
-    }
-
-    /**
-     * @param string $table
-     * @return bool|mixed
-     */
-    public function find(string $table)
-    {
-        $ret = $this->select($table);
-
-        if ($ret !== false) {
-            return $ret[0];
-        } else {
-            return false;
-        }
-    }
-
-    /**
      * @param string $table
      * @param array $data
      * @return bool|int
@@ -253,7 +191,6 @@ class Db
     public function add (array $data, string $table)
     {
         $data = $this->filter($data);
-        $table = $this->filter($table);
         $intField = $intVal = '';
 
         foreach ($data as $k => $v) {
@@ -275,7 +212,6 @@ class Db
      */
     public function adds (array $datas, string $table)
     {
-        $table = $this->filter($table);
         $datas = $this->filter($datas);
         $intField = $intVal = '';
 
@@ -305,10 +241,9 @@ class Db
      * @param string $table
      * @return bool|int
      */
-    public function save (array $data, string $where, string $table) {
+    public function save (array $data, array $where, string $table) {
         $data  = $this->filter($data);
-        $table = $this->filter($table);
-        $where = 'WHERE ' . $this->filter($where);
+        $where = $this->parseWhere($where);
 
         $tmp = '';
         foreach ($data as $field => $value) {
@@ -320,50 +255,32 @@ class Db
         return $this->execute($sql);
     }
 
+    private function parseWhere (array $where) {
+        $where = $this->filter($where);
+
+        if (count($where)) {
+            $str = 'WHERE ';
+            foreach ($where as $k => $v) {
+                $str .= "$k='$v' AND ";
+            }
+
+            return substr($str, 0, -4);
+        } else {
+            return '';
+        }
+    }
+
     /**
      * @param string $where
      * @param string $table
      * @return bool|int
      */
-    public function delete (string $where, string $table)
+    public function delete (array $where, string $table)
     {
-        $table = $this->filter($table);
-        $where = 'WHERE ' . $this->filter($where);
+        $where = $this->parseWhere($where);
         $sql   = "DELETE FROM {$table} {$where}";
 
         return $this->execute($sql);
-    }
-
-    private function setParam ()
-    {
-        if ($this->callMethod['where'] && stripos($this->callMethod['where'],'WHERE') === false) {
-            $this->callMethod['where'] = 'WHERE '. $this->callMethod['where'];
-        }
-
-        if ($this->callMethod['group'] && stripos($this->callMethod['group'],'GROUP') === false) {
-            $this->callMethod['group'] = 'GROUP BY  '. $this->callMethod['group'];
-        }
-
-        if ($this->callMethod['having'] && stripos($this->callMethod['having'],'HAVING') === false) {
-            $this->callMethod['having'] = 'HAVING '. $this->callMethod['having'];
-        }
-
-        if ($this->callMethod['order'] && stripos($this->callMethod['order'],'ORDER') === false) {
-            $this->callMethod['order'] = 'ORDER BY  '. $this->callMethod['order'];
-        }
-
-        if ($this->callMethod['limit'] && stripos($this->callMethod['limit'],'LIMIT') === false) {
-            $this->callMethod['limit'] = 'LIMIT '. $this->callMethod['limit'];
-        }
-    }
-
-    private function initParam ()
-    {
-        foreach ($this->callMethod as $k => $v) {
-            $this->callMethod[$k] = '';
-        }
-
-        $this->callMethod['field'] = '*';
     }
 
     public function __destruct()

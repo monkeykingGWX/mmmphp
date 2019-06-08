@@ -39,14 +39,14 @@ class Conf
 
         if (is_file($path) || is_file($appPath)) {
             if (is_file($path)) {
-                self::$conf[$file] = include_once $path;
+                self::$conf[$file] = include $path;
             }
 
             if (is_file($appPath)) {
                 if (isset(self::$conf[$file]) && is_array(self::$conf[$file])) {
-                    self::$conf[$file] = array_merge(self::$conf[$file], include_once $appPath);
+                    self::$conf[$file] = array_merge(self::$conf[$file], include $appPath);
                 } else {
-                    self::$conf[$file] = include_once $appPath;
+                    self::$conf[$file] = include $appPath;
                 }
             }
 

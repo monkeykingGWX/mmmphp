@@ -2,10 +2,9 @@
 /**
  * mmmphp入口文件
  */
-// 开启session
-session_start();
 
 // 定义常量
+define('ROOT_PATH',dirname(__DIR__) );
 define('MMMPHP_PATH', __DIR__ );
 define('MMMPHP_LIB_PATH', MMMPHP_PATH . '/lib');
 

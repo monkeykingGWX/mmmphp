@@ -18,18 +18,28 @@ class Model
     // 数据库连接配置信息
     protected $connection = [];
 
+    // 可进行连贯操作的方法名
+    private $callMethod = [
+        'field'  => '*',
+        'where'  => '',
+        'group'  => '',
+        'having' => '',
+        'order'  => '',
+        'limit'  => ''
+    ];
+
     public function __construct($tableName = '', $tablePrefix = '', $connection = [])
     {
         if ($tableName) {
             $this->tableName = $tableName;
-        } else {
+        } elseif (empty($this->tableName)) {
             $className = strtolower(get_class($this));
             $this->tableName = (basename(str_replace('\\', '/', $className)));
         }
 
         if ($tablePrefix) {
             $this->tablePrefix = $tablePrefix;
-        } else {
+        } elseif (empty($this->tablePrefix)) {
             $this->tablePrefix = Conf::get('db_prefix', 'database');
         }
 
@@ -82,10 +92,10 @@ class Model
     /**
      * 执行多条sql语句
      * @param array $sqls
-     * @param bool $security
+     * @param bool $security 是否启动事务
      * @return bool
      */
-    public function executes (array $sqls, bool $security)
+    public function executes (array $sqls, bool $security = false)
     {
         return $this->db->executes($sqls, $security);
     }
@@ -122,19 +132,48 @@ class Model
     }
 
     /**
+     * @param string $table
      * @return array|bool|null
      */
-    public function select ()
+    public function select ($resultType = MYSQLI_ASSOC)
     {
-        return $this->db->select($this->tablePrefix . $this->tableName);
+        $table = $this->tableName;
+        $this->setParam();
+        $sql = "SELECT {$this->callMethod['field']} FROM {$table} 
+            {$this->callMethod['where']} 
+            {$this->callMethod['group']}
+            {$this->callMethod['having']} 
+            {$this->callMethod['order']} 
+            {$this->callMethod['limit']}";
+        $this->initParam();
+
+        return $this->db->query($sql, $resultType);
     }
 
     /**
+     * @param string $table
      * @return bool|mixed
      */
-    public function find ()
+    public function find($resultType = MYSQLI_ASSOC)
     {
-        return $this->db->find($this->tablePrefix . $this->tableName);
+        $ret = $this->select($resultType);
+
+        if ($ret) {
+            return $ret[0];
+        } else {
+            return false;
+        }
+    }
+
+    public function count ($resultType = MYSQLI_NUM) {
+        $this->field('count(*)');
+        $ret = $this->select($resultType);
+
+        if ($ret !== false) {
+            return $ret[0][0];
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -155,13 +194,62 @@ class Model
         return $this->db->adds($datas, $this->tablePrefix . $this->tableName);
     }
 
-    public function save (array $data, string $where)
+    public function save (array $data, array $where)
     {
         return $this->db->save($data, $where, $this->tablePrefix . $this->tableName);
     }
 
-    public function delete (string $where)
+    public function delete (array $where)
     {
         return $this->db->delete($where, $this->tablePrefix . $this->tableName);
+    }
+
+    /**
+     * 连贯操作
+     * @param $methodName
+     * @param $arguments
+     * @return $this
+     */
+    public function __call($methodName, $arguments)
+    {
+        $methodName = strtolower($methodName);
+
+        if (array_key_exists($methodName, $this->callMethod) && isset($arguments[0])) {
+            $this->callMethod[$methodName] = $arguments[0];
+        }
+
+        return $this;
+    }
+
+    private function setParam ()
+    {
+        if ($this->callMethod['where'] && stripos($this->callMethod['where'],'WHERE') === false) {
+            $this->callMethod['where'] = 'WHERE '. $this->callMethod['where'];
+        }
+
+        if ($this->callMethod['group'] && stripos($this->callMethod['group'],'GROUP') === false) {
+            $this->callMethod['group'] = 'GROUP BY  '. $this->callMethod['group'];
+        }
+
+        if ($this->callMethod['having'] && stripos($this->callMethod['having'],'HAVING') === false) {
+            $this->callMethod['having'] = 'HAVING '. $this->callMethod['having'];
+        }
+
+        if ($this->callMethod['order'] && stripos($this->callMethod['order'],'ORDER BY') === false) {
+            $this->callMethod['order'] = 'ORDER BY  '. $this->callMethod['order'];
+        }
+
+        if ($this->callMethod['limit'] && stripos($this->callMethod['limit'],'LIMIT') === false) {
+            $this->callMethod['limit'] = 'LIMIT '. $this->callMethod['limit'];
+        }
+    }
+
+    private function initParam ()
+    {
+        foreach ($this->callMethod as $k => $v) {
+            $this->callMethod[$k] = '';
+        }
+
+        $this->callMethod['field'] = '*';
     }
 }

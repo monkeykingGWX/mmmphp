@@ -41,7 +41,7 @@ class Page
         "theme" => "%HEADER% %FIRST% %PREV% %PAGE_LINK% %NEXT% %LAST% %CURRENT%"
     ];
 
-    public function __construct(int $total, int $listRow = 25)
+    public function __construct(int $total, int $listRow = 25, $query = '')
     {
         $this->total   = $total;
         $this->listRow = Conf::get('PAGE_LIST_ROW')? : $listRow;
@@ -63,8 +63,8 @@ class Page
             $this->page = 1;
         }
 
-        $this->limit = "LIMIT " . ($this->page-1) * $listRow . "$listRow";
-        $this->uri = $this->getUri();
+        $this->limit = "LIMIT " . ($this->page-1) * $listRow . ",$listRow";
+        $this->uri = $this->getUri($query);
     }
 
     public function __get ($property)
@@ -92,33 +92,37 @@ class Page
         $this->config = array_merge($this->config, $config);
     }
 
-    private function getUri ()
+    private function getUri ($query)
     {
-        $pathType = Route::checkPath();
-        $url      = $_SERVER['REQUEST_URI'];
+        $queryUrl      = $_SERVER['REQUEST_URI'];
 
-        if ($pathType == 'normal' || $pathType == 'mixed') {    // 普通模式或混合模式
-            $urlArr = parse_url($url);
-
-            if (isset($urlArr['query'])) {
-                parse_str($urlArr['query'], $queryArr);
-                unset($queryArr[$this->pageParam]);
-                $url = $urlArr['path'] . '?' . http_build_query($queryArr);
+        if (strstr($queryUrl, '?')) {
+            if (substr($queryUrl, 0, -1) != '?') {
+                $url = $queryUrl . '&';
             }
+        } else {
+            $url = $queryUrl . '?';
+        }
+        // 将query拼接上
+        if (is_array($query)) {
+            $url .=  http_build_query($query);
+        } else {
+            $url .= trim($query, '&?');
+        }
 
-            if (strstr($url, '?')) {
-                $url = substr($url, -1) == '?' ? $url : ($url . '&');
-            } else {
-                $url .= '?';
-            }
-        } else {    // 重写模式
-            $url = rtrim($url, '/\\');
+        // 再将所有query解析出,过滤掉重复的query以及分页的query
+        $urlArr = parse_url($url);
 
-            if (strpos($url, $this->pageParam)) {
-                $urlArr = explode('/',$url);
-                array_splice($urlArr, array_search($this->pageParam, $urlArr), 2);
-                $url = implode("/", $urlArr);
-            }
+        if (isset($urlArr['query'])) {
+            parse_str($urlArr['query'], $queryArr);
+            unset($queryArr[$this->pageParam]);
+            $url = $urlArr['path'] . '?' . http_build_query($queryArr);
+        }
+
+        if (strstr($url, '?')) {
+            $url = substr($url, -1) == '?' ? $url : ($url . '&');
+        } else {
+            $url .= '?';
         }
 
         return $url;
@@ -131,11 +135,7 @@ class Page
             return '';
         }
 
-        if (Route::checkPath() == 'rewrite') {
-            $pageUrl = $this->uri . '?' . $this->pageParam . '=';
-        } else {
-            $pageUrl = $this->uri . $this->pageParam . '=';
-        }
+        $pageUrl = $this->uri . $this->pageParam . '=';
 
         // header current
         $header  = '<li class="page-item header">' . $this->config['header'] . '</li>';
