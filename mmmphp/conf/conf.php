@@ -2,7 +2,8 @@
 
 return array(
     // session配置项
-
+    'SESSION_PREFIX' => 'mmmphp',
+    'SESSION_LEFTTIME' => 1800,    // 单位秒
 
     // 时区
     'TIMEZONE'           => 'PRC',

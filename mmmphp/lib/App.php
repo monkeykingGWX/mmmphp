@@ -23,26 +23,27 @@ class App
         $logConf = [
             'log_time_format' => Conf::get('LOG_TIME_FORMAT'),
             'log_filesize'    => Conf::get('LOG_FILESIZE'),
-            'log_path'        => APP_PATH . '/logs/'.$module
+            'log_path'        => ROOT_PATH . '/' . APP_NAME . '/logs/'.$module
         ];
+
         Log::init($logConf, Conf::get('LOG_TYPE'));
 
         $file = APP_PATH . '/' .  $module . '/'. Conf::get('CONTROLLER_NAME') .'/' . $controller . '.php';
 
         if (is_file($file)) {
+            // 将模块/控制器/方法存放入常量中
+            define('__MODULE__', $module);
+            define('__CONTROLLER__', $controller);
+            define('__ACTION__', strtolower($action));
+
             $ctrl = '\\' .APP_NAME  . '\\' .  $module . '\\' . Conf::get('CONTROLLER_NAME') . '\\' . $controller;
-            $obj = new $ctrl();
+            $obj  = new $ctrl();
 
             if (!method_exists($obj, $action)) {
                 throwErr ( $module . '/' . $controller . '/' . $action . '方法不存在', function (){
                     http_response_code(404);
                 });
             }
-
-            // 将模块/控制器/方法存放入常量中
-            define('__MODULE__', $module);
-            define('__CONTROLLER__', $controller);
-            define('__ACTION__', strtolower($action));
 
             $obj->$action();    // 执行控制器方法
         } else {
@@ -77,7 +78,7 @@ class App
         $tmpArr = explode('_', $str);
         $arr    = array_map(function ($val)
         {
-            return ucfirst($val);
+            return ucfirst(strtolower($val));
         }, $tmpArr);
 
         return implode("", $arr);
