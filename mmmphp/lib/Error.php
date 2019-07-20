@@ -21,7 +21,7 @@ class Error
         ];
 
         // 记录错误日志
-        $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})";
+        $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})" . PHP_EOL . self::getTrace();
         Log::record($log);
 
         self::dealError($error);
@@ -39,7 +39,7 @@ class Error
         ];
 
         // 记录错误日志
-        $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})";
+        $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})" . PHP_EOL . self::getTrace();
         Log::record($log);
 
         self::dealError($error);
@@ -54,7 +54,7 @@ class Error
 
         if ($error) {
             // 记录错误日志
-            $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})";
+            $log = "ERR:message:{$error['message']} on file:{$error['file']}({$error['line']})" . PHP_EOL . self::getTrace();
             Log::record($log);
 
             self::dealError($error);
@@ -70,11 +70,40 @@ class Error
     private static function dealError ($err)
     {
         if (APP_DEBUG) {    // 显示错误
-            exit ('<b>'.$err['message'].'</b>'.PHP_EOL.'FILE: '.$err['file'].'('.$err['line'].')');
+            exit ('<b>'.$err['message'].'</b>'.PHP_EOL.'FILE: '.$err['file'].'('.$err['line'].')' . PHP_EOL . nl2br(self::getTrace()));
         } else {    // 跳转错误页
             include Conf::get('ERR_FILE');
         }
 
         exit;
+    }
+
+    private static function getTrace ()
+    {
+        $log = '';
+        $trace = debug_backtrace();
+        foreach ($trace as $i => $t)
+        {
+            if (!isset($t['file']))
+            {
+                $t['file'] = 'unknown';
+            }
+            if (!isset($t['line']))
+            {
+                $t['line'] = 0;
+            }
+            if (!isset($t['function']))
+            {
+                $t['function'] = 'unknown';
+            }
+            $log .= "#$i {$t['file']}({$t['line']}): ";
+            if (isset($t['object']) and is_object($t['object']))
+            {
+                $log .= get_class($t['object']) . '->';
+            }
+            $log .= "{$t['function']}()\n";
+        }
+
+        return $log;
     }
 }
